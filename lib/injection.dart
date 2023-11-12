@@ -1,7 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
-import 'package:zero_2024_flutter/api/test_api_service.dart';
+import 'package:zero_2024_flutter/api/dummy_api_service.dart';
 import 'package:zero_2024_flutter/api/interceptors.dart';
 
 final dioProvider = Provider<Dio>((ref) {
@@ -14,9 +14,9 @@ final dioProvider = Provider<Dio>((ref) {
   return dio;
 });
 
-final testApiServiceProvider = Provider<TestApiService>((ref) {
+final dummyApiServiceProvider = Provider<DummyApiService>((ref) {
   // DioプロバイダーからDioインスタンスを取得
   final dio = ref.watch(dioProvider);
   // TestApiServiceを作成
-  return TestApiService(dio);
+  return DummyApiService(dio);
 });
