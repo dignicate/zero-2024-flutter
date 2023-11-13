@@ -3,6 +3,8 @@ import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 import 'package:zero_2024_flutter/api/dummy_api_service.dart';
 import 'package:zero_2024_flutter/api/interceptors.dart';
+import 'package:zero_2024_flutter/data/dummy/dummy_repository_impl.dart';
+import 'package:zero_2024_flutter/domain/dummy/dummy_repository.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio();
@@ -19,4 +21,9 @@ final dummyApiServiceProvider = Provider<DummyApiService>((ref) {
   final dio = ref.watch(dioProvider);
   // TestApiServiceを作成
   return DummyApiService(dio);
+});
+
+final dummyRepositoryProvider = Provider<DummyRepository>((ref) {
+  final apiService = ref.watch(dummyApiServiceProvider);
+  return DummyRepositoryImpl(apiService);
 });

@@ -9,6 +9,6 @@ part 'dummy_api_service.g.dart';
 abstract class DummyApiService {
   factory DummyApiService(Dio dio, {String baseUrl}) = _DummyApiService;
 
-    @GET("/todos/1")
+  @GET("/todos/1")
   Future<TodoDto> fetchTestJson();
 }
