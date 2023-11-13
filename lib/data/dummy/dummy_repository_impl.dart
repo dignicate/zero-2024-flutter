@@ -8,7 +8,8 @@ import 'package:zero_2024_flutter/shared/result.dart';
 class DummyRepositoryImpl implements DummyRepository {
   final DummyApiService _apiService;
 
-  DummyRepositoryImpl(this._apiService);
+  DummyRepositoryImpl({required DummyApiService apiService})
+      : _apiService = apiService;
 
   Future<Result<TodoDomainObject>> get() async {
     try {

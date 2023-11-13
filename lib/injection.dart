@@ -5,6 +5,7 @@ import 'package:zero_2024_flutter/api/dummy_api_service.dart';
 import 'package:zero_2024_flutter/api/interceptors.dart';
 import 'package:zero_2024_flutter/data/dummy/dummy_repository_impl.dart';
 import 'package:zero_2024_flutter/domain/dummy/dummy_repository.dart';
+import 'package:zero_2024_flutter/domain/dummy/dummy_use_case.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio();
@@ -24,6 +25,13 @@ final dummyApiServiceProvider = Provider<DummyApiService>((ref) {
 });
 
 final dummyRepositoryProvider = Provider<DummyRepository>((ref) {
-  final apiService = ref.watch(dummyApiServiceProvider);
-  return DummyRepositoryImpl(apiService);
+  return DummyRepositoryImpl(
+    apiService: ref.watch(dummyApiServiceProvider)
+  );
+});
+
+final dummyUseCaseProvider = Provider<DummyUseCase>((ref) {
+  return DummyUseCase(
+    dummyRepository: ref.watch(dummyRepositoryProvider)
+  );
 });
