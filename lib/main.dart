@@ -11,7 +11,6 @@ Future<void> main() async {
   await dotenv.load(fileName: 'config/.env.$env');
   runApp(
     const ProviderScope(
-      // ProviderScopeを再度使うようにしてください。
       child: MaterialApp(
         initialRoute: '/',
         onGenerateRoute: _generateRoute,
@@ -46,6 +45,14 @@ class ZeroApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO:
+    // final state = ref.watch(mainViewModelProvider);
+    // final notifier = ref.read(mainViewModelProvider.notifier);
+
+    // useEffect(() {
+    //   notifier.fetchAuthInfo();
+    //   return null;
+    // }, const []);
+
     sharedLogger.d('Transition to dummy view.');
     return Text('');
   }
