@@ -6,27 +6,69 @@ import 'package:zero_2024_flutter/domain/dummy/todo_domain_object.dart';
 
 part 'top_view_model.freezed.dart';
 
-class TopNotifier extends StateNotifier<TodoUiState> {
+class TopNotifier extends StateNotifier<TopUiState> {
   final DummyUseCase _useCase;
 
   StreamSubscription? _subscription;
 
   TopNotifier({required DummyUseCase useCase})
       : _useCase = useCase,
-        super(const TodoUiState()) {
+        super(const TopUiState()) {
     _initialize();
   }
 
-  void _initialize() {}
+  void _initialize() {
+    _subscription = _useCase.resource.listen((data) {
+      data.when(
+        data: (data) => {
+          state = state.success(data.toViewData())
+        },
+        loading: () => {
+          state = state.loading()
+        },
+        error: (message) => {
+          state = state.error(message)
+        },
+      );
+    });
+  }
+
+  void fetch() {
+    _useCase.fetch();
+  }
 }
 
 @freezed
-class TodoUiState with _$TodoUiState {
-  const factory TodoUiState({
+class TopUiState with _$TopUiState {
+  const factory TopUiState({
     @Default(false) bool isLoading,
     @Default(null) String? errorMessage,
     @Default(null) TodoViewData? viewData,
-  }) = _TodoUistate;
+  }) = _TopUiState;
+}
+
+extension _TopUiStateExtension on TopUiState {
+  TopUiState loading() {
+    return copyWith(
+      isLoading: true,
+      errorMessage: null,
+    );
+  }
+
+  TopUiState error(String errorMessage) {
+    return copyWith(
+      isLoading: false,
+      errorMessage: errorMessage,
+    );
+  }
+
+  TopUiState success(TodoViewData viewData) {
+    return copyWith(
+      viewData: viewData,
+      isLoading: false,
+      errorMessage: null,
+    );
+  }
 }
 
 @freezed

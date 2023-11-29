@@ -6,6 +6,7 @@ import 'package:zero_2024_flutter/api/interceptors.dart';
 import 'package:zero_2024_flutter/data/dummy/dummy_repository_impl.dart';
 import 'package:zero_2024_flutter/domain/dummy/dummy_repository.dart';
 import 'package:zero_2024_flutter/domain/dummy/dummy_use_case.dart';
+import 'package:zero_2024_flutter/features/top/top_view_model.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio();
@@ -33,5 +34,11 @@ final dummyRepositoryProvider = Provider<DummyRepository>((ref) {
 final dummyUseCaseProvider = Provider<DummyUseCase>((ref) {
   return DummyUseCase(
     dummyRepository: ref.watch(dummyRepositoryProvider)
+  );
+});
+
+final topViewModelProvider = StateNotifierProvider<TopNotifier, TopUiState>((ref) {
+  return TopNotifier(
+    useCase: ref.watch(dummyUseCaseProvider),
   );
 });
