@@ -36,6 +36,12 @@ class TopNotifier extends StateNotifier<TopUiState> {
   void fetch() {
     _useCase.fetch();
   }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
 }
 
 @freezed
