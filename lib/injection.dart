@@ -8,6 +8,8 @@ import 'package:zero_2024_flutter/domain/dummy/dummy_repository.dart';
 import 'package:zero_2024_flutter/domain/dummy/dummy_use_case.dart';
 import 'package:zero_2024_flutter/features/top/top_view_model.dart';
 
+import 'main_view_model.dart';
+
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio();
   // Dioに追加設定を行う
@@ -41,4 +43,8 @@ final topViewModelProvider = StateNotifierProvider<TopNotifier, TopUiState>((ref
   return TopNotifier(
     useCase: ref.watch(dummyUseCaseProvider),
   );
+});
+
+final mainViewModelProvider = StateNotifierProvider<MainNotifier, MainState>((ref) {
+  return MainNotifier();
 });

@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:zero_2024_flutter/domain/dummy/dummy_use_case.dart';
 import 'package:zero_2024_flutter/domain/dummy/todo_domain_object.dart';
+import 'package:zero_2024_flutter/shared/utils/logger.dart';
 
 part 'top_view_model.freezed.dart';
 
@@ -19,6 +20,7 @@ class TopNotifier extends StateNotifier<TopUiState> {
 
   void _initialize() {
     _subscription = _useCase.resource.listen((data) {
+      sharedLogger.d("data: $data");
       data.when(
         data: (data) => {
           state = state.success(data.toViewData())
@@ -34,6 +36,7 @@ class TopNotifier extends StateNotifier<TopUiState> {
   }
 
   void fetch() {
+    sharedLogger.d("fetch()");
     _useCase.fetch();
   }
 
