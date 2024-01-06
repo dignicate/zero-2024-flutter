@@ -41,7 +41,7 @@ class _BodyWidget extends HookConsumerWidget {
         _ButtonWidget(
             text: 'Subscription test',
             onPressed: () {
-              Navigator.of(context).pushNamed('/subscription');
+              Navigator.of(context).pushReplacementNamed('/subscription');
             },
         ),
         const SizedBox(height: 16.0),
