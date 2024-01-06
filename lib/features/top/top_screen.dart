@@ -20,7 +20,7 @@ class TopScreen extends HookConsumerWidget {
     return const Scaffold(
       appBar: CustomAppBar(
         title: 'Top Page',
-        showBackButton: true,
+        showBackButton: false,
       ),
       body: Center(
         child: _BodyWidget(),
