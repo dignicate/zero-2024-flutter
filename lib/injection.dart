@@ -6,6 +6,8 @@ import 'package:zero_2024_flutter/api/interceptors.dart';
 import 'package:zero_2024_flutter/data/dummy/dummy_repository_impl.dart';
 import 'package:zero_2024_flutter/domain/dummy/dummy_repository.dart';
 import 'package:zero_2024_flutter/domain/dummy/dummy_use_case.dart';
+import 'package:zero_2024_flutter/domain/subscription/subscription_use_case.dart';
+import 'package:zero_2024_flutter/features/subscription/subscription_view_model.dart';
 import 'package:zero_2024_flutter/features/top/top_view_model.dart';
 
 import 'main_view_model.dart';
@@ -33,9 +35,21 @@ final dummyRepositoryProvider = Provider<DummyRepository>((ref) {
   );
 });
 
+final subscriptionUseCaseProvider = Provider<SubscriptionUseCase>((ref) {
+  return SubscriptionUseCase(
+    // dummyRepository: ref.watch(dummyRepositoryProvider)
+  );
+});
+
 final dummyUseCaseProvider = Provider<DummyUseCase>((ref) {
   return DummyUseCase(
     dummyRepository: ref.watch(dummyRepositoryProvider)
+  );
+});
+
+final subscriptionViewModelProvider = StateNotifierProvider<SubscriptionNotifier, SubscriptionUiState>((ref) {
+  return SubscriptionNotifier(
+    useCase: ref.watch(subscriptionUseCaseProvider),
   );
 });
 

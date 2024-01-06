@@ -17,17 +17,21 @@ class CustomAppBar extends HookConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     return AppBar(
       title: Center(
         child: Text(
           title,
-          style: Theme.of(context).textTheme.appBarTitle,
+          style: theme.textTheme.appBarTitle(color: theme.appBarTitle),
         ),
       ),
-      backgroundColor: Theme.of(context).navigationBackground,
+      backgroundColor: Theme.of(context).appBarBackground,
       leading: showBackButton
           ? IconButton(
-              icon: const Icon(Icons.arrow_back),
+              icon: Icon(
+                Icons.arrow_back,
+                color: theme.appBarTitle,
+              ),
               onPressed: () {
                 Navigator.pop(context);
               },

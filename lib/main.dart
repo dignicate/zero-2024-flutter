@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:logger/logger.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:zero_2024_flutter/features/subscription/subscription_screen.dart';
 import 'package:zero_2024_flutter/features/top/top_screen.dart';
-import 'package:zero_2024_flutter/shared/utils/logger.dart';
 import 'injection.dart';
 
 Future<void> main() async {
@@ -26,12 +25,9 @@ Route<dynamic> _generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const ZeroApp());
     case '/top':
       return MaterialPageRoute(builder: (_) => const TopScreen());
-    // case '/home':
-    //   // ホーム画面ルート
-    //   return MaterialPageRoute(builder: (_) => ZeroApp());
-    // 他のルートを追加
+    case '/subscription':
+      return MaterialPageRoute(builder: (_) => const SubscriptionListScreen());
     default:
-      // 存在しないルートのハンドリング
       return MaterialPageRoute(
         builder: (_) =>
           const Scaffold(body: Center(child: Text('Not Found'))));
