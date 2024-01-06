@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:zero_2024_flutter/features/common/custom_app_bar.dart';
 import 'package:zero_2024_flutter/injection.dart';
 
 class TopScreen extends HookConsumerWidget {
@@ -16,11 +17,12 @@ class TopScreen extends HookConsumerWidget {
       return null;
     }, const []);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Top Page'),
+    return const Scaffold(
+      appBar: CustomAppBar(
+        title: 'Top Page',
+        showBackButton: true,
       ),
-      body: const Center(
+      body: Center(
         child: _BodyWidget(),
       ),
     );
