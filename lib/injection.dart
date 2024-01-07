@@ -1,5 +1,4 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 import 'package:zero_2024_flutter/api/dummy_api_service.dart';
 import 'package:zero_2024_flutter/api/interceptors.dart';
