@@ -39,26 +39,15 @@ class _BodyWidget extends HookConsumerWidget {
     final items = state.viewData?.items;
     sharedLogger.d("items: $items");
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        items?.isNotEmpty == true ?
-          Center(
-            child: Expanded(
-              child: ListView.builder(
-                itemCount: items!.length,
-                itemBuilder: (context, index) {
-                  return ProductButton(item: items![index]);
-                },
-              ),
-            )
-          )
-        : const Text('Not found.'),
-
-        const SizedBox(height: 16.0),
-        // _ButtonWidget(text: '', onPressed: null),
-      ],
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center, // ここで垂直方向の中央揃え
+        children: items!.map((item) {
+          return ProductButton(item: item);
+        }).toList(),
+      ),
     );
+
   }
 }
 
