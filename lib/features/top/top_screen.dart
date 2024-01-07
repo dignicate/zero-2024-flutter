@@ -41,7 +41,7 @@ class _BodyWidget extends HookConsumerWidget {
         _ButtonWidget(
             text: 'Subscription test',
             onPressed: () {
-              Navigator.of(context).pushReplacementNamed('/subscription');
+              Navigator.of(context).pushNamed('/subscription');
             },
         ),
         const SizedBox(height: 16.0),
@@ -61,16 +61,16 @@ class _ButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () => onPressed?.call(),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.black,
+        fixedSize: const Size(200, 50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+      ),
       child: Text(
         text,
-        style: TextStyle(color: Colors.white), // テキストを白色に設定
-      ),
-      style: ElevatedButton.styleFrom(
-        primary: Colors.black, // 背景を黒色に設定
-        fixedSize: Size(200, 50), // 固定幅を設定 (幅: 200, 高さ: 50)
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25), // 角の半径を高さの半分 (ここでは25) に設定
-        ),
+        style: const TextStyle(color: Colors.white), // TODO theme 拡張に定義する
       ),
     );
   }
