@@ -5,6 +5,8 @@ import 'package:zero_2024_flutter/features/common/custom_app_bar.dart';
 import 'package:zero_2024_flutter/injection.dart';
 import 'package:zero_2024_flutter/shared/utils/logger.dart';
 
+import 'subscription_view_model.dart';
+
 class SubscriptionListScreen extends HookConsumerWidget {
   const SubscriptionListScreen({super.key});
 
@@ -37,15 +39,57 @@ class _BodyWidget extends HookConsumerWidget {
     final items = state.viewData?.items;
     sharedLogger.d("items: $items");
 
-    return const Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Center(
-          child: Text('開発中'),
-        ),
-        SizedBox(height: 16.0),
+        items?.isNotEmpty == true ?
+          Center(
+            child: Expanded(
+              child: ListView.builder(
+                itemCount: items!.length,
+                itemBuilder: (context, index) {
+                  return ProductButton(item: items![index]);
+                },
+              ),
+            )
+          )
+        : const Text('Not found.'),
+
+        const SizedBox(height: 16.0),
         // _ButtonWidget(text: '', onPressed: null),
       ],
+    );
+  }
+}
+
+class ProductButton extends StatelessWidget {
+  final SubscriptionViewDataItem item;
+
+  const ProductButton({super.key, required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(8.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        side: BorderSide(color: Colors.grey.shade300),
+      ),
+      child: InkWell(
+        onTap: () {
+          // ここに購入処理を追加
+        },
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(item.name),
+              Text(item.price),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

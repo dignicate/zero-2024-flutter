@@ -87,9 +87,11 @@ class SubscriptionViewData with _$SubscriptionViewData {
 
 class SubscriptionViewDataItem {
   final String name;
+  final String price;
 
   SubscriptionViewDataItem({
     required this.name,
+    required this.price,
   });
 }
 
@@ -106,6 +108,7 @@ extension _SubscriptionViewDataItemExtension on SubscriptionDomainObjectItem {
   SubscriptionViewDataItem toViewData() {
     return SubscriptionViewDataItem(
       name: name,
+      price: price,
     );
   }
 }
