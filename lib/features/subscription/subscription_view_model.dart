@@ -92,7 +92,7 @@ extension _SubscriptionViewDataExtension on SubscriptionDomainObject {
     String? value,
   }) {
     return SubscriptionViewData(
-      value: value ?? this.value,
+      value: value ?? this.name,
     );
   }
 }

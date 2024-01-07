@@ -4,8 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:zero_2024_flutter/api/dummy_api_service.dart';
 import 'package:zero_2024_flutter/api/interceptors.dart';
 import 'package:zero_2024_flutter/data/dummy/dummy_repository_impl.dart';
+import 'package:zero_2024_flutter/data/subscription/subscription_repository_impl.dart';
 import 'package:zero_2024_flutter/domain/dummy/dummy_repository.dart';
 import 'package:zero_2024_flutter/domain/dummy/dummy_use_case.dart';
+import 'package:zero_2024_flutter/domain/subscription/subscription_repository.dart';
 import 'package:zero_2024_flutter/domain/subscription/subscription_use_case.dart';
 import 'package:zero_2024_flutter/features/subscription/subscription_view_model.dart';
 import 'package:zero_2024_flutter/features/top/top_view_model.dart';
@@ -29,6 +31,10 @@ final dummyApiServiceProvider = Provider<DummyApiService>((ref) {
   return DummyApiService(dio);
 });
 
+final subscriptionRepositoryProvider = Provider<SubscriptionRepository>((ref) {
+  return SubscriptionRepositoryImpl();
+});
+
 final dummyRepositoryProvider = Provider<DummyRepository>((ref) {
   return DummyRepositoryImpl(
     apiService: ref.watch(dummyApiServiceProvider)
@@ -37,6 +43,7 @@ final dummyRepositoryProvider = Provider<DummyRepository>((ref) {
 
 final subscriptionUseCaseProvider = Provider<SubscriptionUseCase>((ref) {
   return SubscriptionUseCase(
+    subscriptionRepository: ref.watch(subscriptionRepositoryProvider),
     // dummyRepository: ref.watch(dummyRepositoryProvider)
   );
 });
