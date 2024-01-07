@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:zero_2024_flutter/features/subscription/subscription_screen.dart';
 import 'package:zero_2024_flutter/features/top/top_screen.dart';
+import 'package:zero_2024_flutter/shared/utils/logger.dart';
 import 'injection.dart';
 
 Future<void> main() async {
@@ -20,6 +21,7 @@ Future<void> main() async {
 }
 
 Route<dynamic> _generateRoute(RouteSettings settings) {
+  sharedLogger.d("settings.name: ${settings.name}");
   switch (settings.name) {
     case '/':
       return MaterialPageRoute(builder: (_) => const ZeroApp());

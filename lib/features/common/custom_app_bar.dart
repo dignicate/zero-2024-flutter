@@ -33,7 +33,7 @@ class CustomAppBar extends HookConsumerWidget implements PreferredSizeWidget {
                 color: theme.appBarTitle,
               ),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop();
               },
             )
           : null,
