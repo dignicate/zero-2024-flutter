@@ -1,4 +1,4 @@
-package com.example.zero_2024_flutter
+package com.dignicate.zero_2024_flutter
 
 import io.flutter.embedding.android.FlutterActivity
 
