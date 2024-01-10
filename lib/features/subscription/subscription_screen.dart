@@ -15,7 +15,7 @@ class SubscriptionListScreen extends HookConsumerWidget {
     final notifier = ref.read(subscriptionViewModelProvider.notifier);
 
     useEffect(() {
-      notifier.fetch();
+      // notifier.fetch();
       return null;
     }, const []);
 
@@ -42,9 +42,14 @@ class _BodyWidget extends HookConsumerWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center, // ここで垂直方向の中央揃え
-        children: items!.map((item) {
-          return ProductButton(item: item);
-        }).toList(),
+        children:
+          items != null ?
+            items.map((item) {
+              return ProductButton(item: item);
+            }).toList()
+          : [
+            const Text('購読商品がありません'),
+          ],
       ),
     );
 
