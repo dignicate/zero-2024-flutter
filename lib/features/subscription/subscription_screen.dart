@@ -15,7 +15,7 @@ class SubscriptionListScreen extends HookConsumerWidget {
     final notifier = ref.read(subscriptionViewModelProvider.notifier);
 
     useEffect(() {
-      // notifier.fetch();
+      notifier.fetch();
       return null;
     }, const []);
 
