@@ -26,6 +26,7 @@ class SubscriptionUseCase {
   }
 
   Future<Resource<SubscriptionDomainObject>> _fetch() async {
+    sharedLogger.d("_fetch()");
     try {
       Result result = await _subscriptionRepository.get();
       if (result is Success) {

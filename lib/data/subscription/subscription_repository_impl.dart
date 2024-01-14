@@ -3,6 +3,7 @@ import 'package:zero_2024_flutter/domain/subscription/subscription_domain_object
 import 'package:zero_2024_flutter/domain/subscription/subscription_repository.dart';
 import 'package:zero_2024_flutter/iap/iap_connection.dart';
 import 'package:zero_2024_flutter/shared/result.dart';
+import 'package:zero_2024_flutter/shared/utils/logger.dart';
 
 class SubscriptionRepositoryImpl implements SubscriptionRepository {
 
@@ -15,18 +16,45 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
 
   @override
   Future<Result<SubscriptionDomainObject>> get() async {
-    final instance = IAPConnection.instance;
-    final response = await instance.queryProductDetails(_subscriptionsIDs.toSet());
-    final list = response.productDetails;
-    if (list.isNotEmpty) {
-      return Success(
-        SubscriptionDomainObject(
-          list: list.toDomain(),
-        )
-      );
+    final useDummyData = true;
+
+    if (useDummyData) {
+      return Success(_getDummyData());
     } else {
-      return Failure("No subscription found");
+      final instance = IAPConnection.instance;
+      final response = await instance.queryProductDetails(_subscriptionsIDs.toSet());
+      sharedLogger.d("response: $response");
+      sharedLogger.d("notFoundIDs: ${response.notFoundIDs}");
+      final list = response.productDetails;
+      if (list.isNotEmpty) {
+        return Success(
+            SubscriptionDomainObject(
+              list: list.toDomain(),
+            )
+        );
+      } else {
+        return Failure("No subscription found");
+      }
     }
+  }
+
+  SubscriptionDomainObject _getDummyData() {
+    return const SubscriptionDomainObject(
+      list: [
+        SubscriptionDomainObjectItem(
+          name: "plan_a",
+          price: "¥100",
+          description: "plan_aの説明",
+          id: "plan_a",
+        ),
+        SubscriptionDomainObjectItem(
+          name: "plan_b",
+          price: "¥200",
+          description: "plan_bの説明",
+          id: "plan_b",
+        ),
+      ]
+    );
   }
 }
 
