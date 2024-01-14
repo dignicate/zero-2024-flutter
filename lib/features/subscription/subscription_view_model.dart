@@ -82,17 +82,33 @@ extension _SubscriptionUiStateExtension on SubscriptionUiState {
 
 @freezed
 class SubscriptionViewData with _$SubscriptionViewData {
-  const factory SubscriptionViewData({
-    @Default(null) String? value,
-  }) = _SubscriptionViewData;
+  const factory SubscriptionViewData.data({required List<SubscriptionViewDataItem> items}) = _SubscriptionViewData;
+}
+
+class SubscriptionViewDataItem {
+  final String name;
+  final String price;
+
+  SubscriptionViewDataItem({
+    required this.name,
+    required this.price,
+  });
 }
 
 extension _SubscriptionViewDataExtension on SubscriptionDomainObject {
-  SubscriptionViewData toViewData({
-    String? value,
-  }) {
-    return SubscriptionViewData(
-      value: value ?? this.value,
+  SubscriptionViewData toViewData() {
+    return SubscriptionViewData.data(
+      items: list.map((e) => e.toViewData()).toList(),
+    );
+  }
+}
+
+extension _SubscriptionViewDataItemExtension on SubscriptionDomainObjectItem {
+
+  SubscriptionViewDataItem toViewData() {
+    return SubscriptionViewDataItem(
+      name: name,
+      price: price,
     );
   }
 }

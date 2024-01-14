@@ -13,7 +13,7 @@ class TopScreen extends HookConsumerWidget {
     final notifier = ref.read(topViewModelProvider.notifier);
 
     useEffect(() {
-      notifier.fetch();
+      // notifier.fetch();
       return null;
     }, const []);
 
