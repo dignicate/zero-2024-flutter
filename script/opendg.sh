@@ -2,7 +2,9 @@
 
 echo "=== Dignicate, zero OpenDG script. ==="
 echo "  1. Git empty commit"
-echo "  2. Show devices"
+echo "  2. Run "
+echo "  3. Set option"
+echo "  4. Open iOS simulator"
 echo "Any other key to Exit"
 echo
 read -n 1 -rp "Select an option: " input
@@ -15,8 +17,6 @@ echo_eval() {
 }
 
 parse_devices() {
-  echo "Fetching device information, please wait..."
-  echo
   flutter devices | grep -E 'android|ios' | while read -r line; do
     device_id=$(echo "$line" | awk -F' • ' '{print $2}' | xargs)
     os_version=$(echo "$line" | awk -F' • ' '{print $4}')
@@ -30,22 +30,41 @@ parse_devices() {
 }
 
 if [ "$input" = 1 ]; then
-  echo "Git empty commit"
   echo_eval "git commit --allow-empty -m \"empty commit\""
 elif [ "$input" = 2 ]; then
-  echo "Show devices"
   echo "Select platform:"
   echo "  1 -> Android"
   echo "  2 -> iOS"
   echo "  Any other key -> Both"
   read -n 1 -rp "Select an option: " platform
   echo
+
+  echo "Fetching device information, please wait..."
+  echo
+
   if [ "$platform" = 1 ]; then
-    parse_devices | grep android
+    devices=$(parse_devices | grep android)
   elif [ "$platform" = 2 ]; then
-    parse_devices | grep ios
+    devices=$(parse_devices | grep ios)
   else
-    parse_devices
+    devices=$(parse_devices)
+  fi
+
+  if [ -n "$devices" ]; then
+    echo "Available devices:"
+    echo "$devices" | nl -w 2 -s '. '
+    echo
+    read -n 1 -rp "Select a device: " device_index
+    echo
+    device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
+    if [ -n "$device_id" ]; then
+#      echo_eval "flutter run -d $device_id"
+      echo "flutter run -d $device_id"
+    else
+      echo "Invalid selection."
+    fi
+  else
+    echo "No device found."
   fi
 else
   echo "Exit"
