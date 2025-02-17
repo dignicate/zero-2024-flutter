@@ -15,6 +15,8 @@ echo_eval() {
 }
 
 parse_devices() {
+  echo "Fetching device information, please wait..."
+  echo
   flutter devices | grep -E 'android|ios' | while read -r line; do
     device_id=$(echo "$line" | awk -F' • ' '{print $2}' | xargs)
     os_version=$(echo "$line" | awk -F' • ' '{print $4}')
