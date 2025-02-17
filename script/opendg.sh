@@ -32,7 +32,8 @@ parse_devices() {
 }
 
 list_ios_simulators() {
-  xcrun simctl list devices | grep -E 'iPhone|iPad' | grep -v 'unavailable' | while read -r line; do
+  local keyword="$1"
+  xcrun simctl list devices | grep -E "$keyword" | grep -v 'unavailable' | while read -r line; do
     device_name=$(echo "$line" | awk -F' \\(' '{print $1}')
     device_id=$(echo "$line" | awk -F'\\(' '{print $2}' | awk -F'\\)' '{print $1}')
     echo "$device_id, $device_name"
@@ -102,7 +103,8 @@ elif [ "$input" = 3 ]; then
 elif [ "$input" = 4 ]; then
   echo "Fetching iOS devices, please wait..."
   echo
-  devices=$(list_ios_simulators)
+  read -rp "Enter keyword to filter devices (e.g., iPhone, iPad): " keyword
+  devices=$(list_ios_simulators "$keyword")
   if [ -n "$devices" ]; then
     echo "Available iOS devices:"
     echo "$devices" | nl -w 2 -s '. ' | head -n 9
