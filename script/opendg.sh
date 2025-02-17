@@ -31,6 +31,14 @@ parse_devices() {
   done
 }
 
+list_ios_simulators() {
+  xcrun simctl list devices | grep -E 'iPhone|iPad' | grep -v 'unavailable' | while read -r line; do
+    device_name=$(echo "$line" | awk -F' \\(' '{print $1}')
+    device_id=$(echo "$line" | awk -F'\\(' '{print $2}' | awk -F'\\)' '{print $1}')
+    echo "$device_id, $device_name"
+  done
+}
+
 set_option() {
   if [ -f "$OPTIONS_FILE" ]; then
     current_options=$(<"$OPTIONS_FILE")
@@ -92,8 +100,36 @@ elif [ "$input" = 3 ]; then
   set_option
   # Add your set option code here
 elif [ "$input" = 4 ]; then
-  echo "Open iOS simulator"
-  open -a Simulator
+  echo "Fetching iOS devices, please wait..."
+  echo
+  devices=$(list_ios_simulators)
+  if [ -n "$devices" ]; then
+    echo "Available iOS devices:"
+    echo "$devices" | nl -w 2 -s '. ' | head -n 9
+    echo
+    read -n 1 -rp "Select a device: " device_index
+    echo
+    device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
+    if [ -n "$device_id" ]; then
+      if pgrep -x "Simulator" > /dev/null; then
+        read -n 1 -rp "Simulator is already running. Close it? (y/N): " close_sim
+        echo
+        if [ "$close_sim" = "y" ]; then
+          pkill -x "Simulator"
+          open -a Simulator --args -CurrentDeviceUDID "$device_id"
+        else
+          echo "Operation canceled."
+          exit
+        fi
+      else
+        open -a Simulator --args -CurrentDeviceUDID "$device_id"
+      fi
+    else
+      echo "Invalid selection."
+    fi
+  else
+    echo "No iOS device found."
+  fi
 else
   echo "Exit"
   exit
