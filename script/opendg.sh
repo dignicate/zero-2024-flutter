@@ -1,5 +1,7 @@
 #!/bin/bash
 
+OPTIONS_FILE="$HOME/.flutter_run_options"
+
 echo "=== Dignicate, zero OpenDG script. ==="
 echo "  1. Git empty commit"
 echo "  2. Run "
@@ -29,26 +31,45 @@ parse_devices() {
   done
 }
 
+set_option() {
+  if [ -f "$OPTIONS_FILE" ]; then
+    current_options=$(<"$OPTIONS_FILE")
+    echo "Current options: $current_options"
+  else
+    echo "No options set."
+  fi
+
+  read -rp "Enter additional arguments (e.g., --dart-define=XXXX) or press Enter to cancel: " additional_args
+
+  if [ -n "$additional_args" ]; then
+    echo "$additional_args" > "$OPTIONS_FILE"
+    echo "Options saved."
+  else
+    echo "Operation canceled."
+  fi
+}
+
 if [ "$input" = 1 ]; then
   echo_eval "git commit --allow-empty -m \"empty commit\""
 elif [ "$input" = 2 ]; then
-  echo "Select platform:"
-  echo "  1 -> Android"
-  echo "  2 -> iOS"
-  echo "  Any other key -> Both"
-  read -n 1 -rp "Select an option: " platform
-  echo
+  read -r additional_args < "$OPTIONS_FILE"
+#  echo "Select platform:"
+#  echo "  1 -> Android"
+#  echo "  2 -> iOS"
+#  echo "  Any other key -> Both"
+#  read -n 1 -rp "Select an option: " platform
+#  echo
 
   echo "Fetching device information, please wait..."
   echo
 
-  if [ "$platform" = 1 ]; then
-    devices=$(parse_devices | grep android)
-  elif [ "$platform" = 2 ]; then
-    devices=$(parse_devices | grep ios)
-  else
+#  if [ "$platform" = 1 ]; then
+#    devices=$(parse_devices | grep android)
+#  elif [ "$platform" = 2 ]; then
+#    devices=$(parse_devices | grep ios)
+#  else
     devices=$(parse_devices)
-  fi
+#  fi
 
   if [ -n "$devices" ]; then
     echo "Available devices:"
@@ -59,13 +80,20 @@ elif [ "$input" = 2 ]; then
     device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
     if [ -n "$device_id" ]; then
 #      echo_eval "flutter run -d $device_id"
-      echo "flutter run -d $device_id"
+      cmd="flutter run -d $device_id $additional_args"
+      echo "$cmd"
     else
       echo "Invalid selection."
     fi
   else
     echo "No device found."
   fi
+elif [ "$input" = 3 ]; then
+  set_option
+  # Add your set option code here
+elif [ "$input" = 4 ]; then
+  echo "Open iOS simulator"
+  open -a Simulator
 else
   echo "Exit"
   exit
