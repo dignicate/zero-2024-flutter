@@ -9,7 +9,7 @@ echo "  3. Set option"
 echo "  4. Open iOS simulator"
 echo "Any other key to Exit"
 echo
-read -n 1 -rp "Select an option: " input
+read -rp "Select an option: " input
 echo
 
 echo_eval() {
@@ -64,35 +64,22 @@ if [ "$input" = 1 ]; then
   echo_eval "git commit --allow-empty -m \"empty commit\""
 elif [ "$input" = 2 ]; then
   read -r additional_args < "$OPTIONS_FILE"
-#  echo "Select platform:"
-#  echo "  1 -> Android"
-#  echo "  2 -> iOS"
-#  echo "  Any other key -> Both"
-#  read -n 1 -rp "Select an option: " platform
-#  echo
 
   echo "Fetching device information, please wait..."
   echo
 
-#  if [ "$platform" = 1 ]; then
-#    devices=$(parse_devices | grep android)
-#  elif [ "$platform" = 2 ]; then
-#    devices=$(parse_devices | grep ios)
-#  else
-    devices=$(parse_devices)
-#  fi
+  devices=$(parse_devices)
 
   if [ -n "$devices" ]; then
     echo "Available devices:"
     echo "$devices" | nl -w 2 -s '. '
     echo
-    read -n 1 -rp "Select a device: " device_index
+    read -rp "Select a device: " device_index
     echo
     device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
     if [ -n "$device_id" ]; then
-#      echo_eval "flutter run -d $device_id"
       cmd="flutter run -d $device_id $additional_args"
-      echo "$cmd"
+      echo_eval "$cmd"
     else
       echo "Invalid selection."
     fi
@@ -111,12 +98,12 @@ elif [ "$input" = 4 ]; then
     echo "Available iOS devices:"
     echo "$devices" | nl -w 2 -s '. ' | head -n 9
     echo
-    read -n 1 -rp "Select a device: " device_index
+    read -rp "Select a device: " device_index
     echo
     device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
     if [ -n "$device_id" ]; then
       if pgrep -x "Simulator" > /dev/null; then
-        read -n 1 -rp "Simulator is already running. Close it? (y/N): " close_sim
+        read -rp "Simulator is already running. Close it? (y/N): " close_sim
         echo
         if [ "$close_sim" = "y" ]; then
           pkill -x "Simulator"
