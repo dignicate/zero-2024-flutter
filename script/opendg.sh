@@ -9,7 +9,7 @@ echo "  3. Set option"
 echo "  4. Open iOS simulator"
 echo "Any other key to Exit"
 echo
-read -rp "Select an option: " input
+read -p "Select an option: " input
 
 echo_eval() {
   local cmd="$1"
@@ -49,7 +49,7 @@ set_option() {
     echo "No options set."
   fi
 
-  read -rp "Enter additional arguments (e.g., --dart-define=XXXX) or press Enter to cancel: " additional_args
+  read -p "Enter additional arguments (e.g., --dart-define=XXXX) or press Enter to cancel: " additional_args
 
   if [ -n "$additional_args" ]; then
     echo "$additional_args" > "$OPTIONS_FILE"
@@ -73,7 +73,7 @@ elif [ "$input" = 2 ]; then
     echo "Available devices:"
     echo "$devices" | nl -w 2 -s '. '
     echo
-    read -rp "Select a device: " device_index
+    read -p "Select a device: " device_index
     device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
     if [ -n "$device_id" ]; then
       cmd="flutter run -d $device_id $additional_args"
@@ -90,17 +90,17 @@ elif [ "$input" = 3 ]; then
 elif [ "$input" = 4 ]; then
   echo "Fetching iOS devices, please wait..."
   echo
-  read -rp "Enter keyword to filter devices (e.g., iPhone, iPad): " keyword
+  read -p "Enter keyword to filter devices (e.g., iPhone, iPad): " keyword
   devices=$(list_ios_simulators "$keyword")
   if [ -n "$devices" ]; then
     echo "Available iOS devices:"
     echo "$devices" | nl -w 2 -s '. ' | head -n 9
     echo
-    read -rp "Select a device: " device_index
+    read -p "Select a device: " device_index
     device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
     if [ -n "$device_id" ]; then
       if pgrep -x "Simulator" > /dev/null; then
-        read -rp "Simulator is already running. Close it? (y/N): " close_sim
+        read -p "Simulator is already running. Close it? (y/N): " close_sim
         if [ "$close_sim" = "y" ]; then
           pkill -x "Simulator"
           open -a Simulator --args -CurrentDeviceUDID "$device_id"
