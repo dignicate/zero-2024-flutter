@@ -10,7 +10,6 @@ echo "  4. Open iOS simulator"
 echo "Any other key to Exit"
 echo
 read -rp "Select an option: " input
-echo
 
 echo_eval() {
   local cmd="$1"
@@ -75,7 +74,6 @@ elif [ "$input" = 2 ]; then
     echo "$devices" | nl -w 2 -s '. '
     echo
     read -rp "Select a device: " device_index
-    echo
     device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
     if [ -n "$device_id" ]; then
       cmd="flutter run -d $device_id $additional_args"
@@ -99,12 +97,10 @@ elif [ "$input" = 4 ]; then
     echo "$devices" | nl -w 2 -s '. ' | head -n 9
     echo
     read -rp "Select a device: " device_index
-    echo
     device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
     if [ -n "$device_id" ]; then
       if pgrep -x "Simulator" > /dev/null; then
         read -rp "Simulator is already running. Close it? (y/N): " close_sim
-        echo
         if [ "$close_sim" = "y" ]; then
           pkill -x "Simulator"
           open -a Simulator --args -CurrentDeviceUDID "$device_id"
