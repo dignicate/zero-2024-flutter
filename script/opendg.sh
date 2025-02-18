@@ -34,7 +34,7 @@ list_ios_simulators() {
   local keyword="$1"
   xcrun simctl list devices | grep -E 'iPhone|iPad' | grep -v 'unavailable' | while read -r line; do
     device_name=$(echo "$line" | awk -F' \\(' '{print $1}')
-    device_id=$(echo "$line" | awk -F'\\(' '{print $2}' | awk -F'\\)' '{print $1}')
+    device_id=$(echo "$line" | grep -oE '[A-F0-9-]{36}')
     if [[ "$device_name" == *"$keyword"* ]]; then
       echo "$device_id, $device_name"
     fi
