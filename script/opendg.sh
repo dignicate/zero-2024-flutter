@@ -76,7 +76,7 @@ elif [ "$input" = 2 ]; then
     read -p "Select a device: " device_index
     device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
     if [ -n "$device_id" ]; then
-      cmd="flutter run -d $device_id $additional_args"
+      cmd="fvm flutter run -d $device_id $additional_args"
       echo_eval "$cmd"
     else
       echo "Invalid selection."
