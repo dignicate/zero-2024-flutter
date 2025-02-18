@@ -94,23 +94,13 @@ elif [ "$input" = 4 ]; then
   devices=$(list_ios_simulators "$keyword")
   if [ -n "$devices" ]; then
     echo "Available iOS devices:"
-    echo "$devices" | nl -w 2 -s '. ' | head -n 9
+    echo "$devices" | nl -w 2 -s '. '
     echo
     read -p "Select a device: " device_index
     device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
     if [ -n "$device_id" ]; then
-      if pgrep -x "Simulator" > /dev/null; then
-        read -p "Simulator is already running. Close it? (y/N): " close_sim
-        if [ "$close_sim" = "y" ]; then
-          pkill -x "Simulator"
-          open -a Simulator --args -CurrentDeviceUDID "$device_id"
-        else
-          echo "Operation canceled."
-          exit
-        fi
-      else
-        open -a Simulator --args -CurrentDeviceUDID "$device_id"
-      fi
+      xcrun simctl boot "$device_id"
+      open -a Simulator --args -CurrentDeviceUDID "$device_id"
     else
       echo "Invalid selection."
     fi
