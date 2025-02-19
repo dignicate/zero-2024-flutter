@@ -3,7 +3,7 @@
 # This script provides a menu-driven interface for various Flutter development tasks.
 # To use this script, you can set up an alias in your shell configuration file (e.g., .bashrc or .zshrc):
 # ```
-# alias opendg="bash <(curl -sSL https://raw.githubusercontent.com/dignicate/zero-2024-flutter/refs/heads/xinyiqi/open_shell_script/script/opendg.sh)"
+# alias opendg="bash <(curl -sSL https://raw.githubusercontent.com/dignicate/zero-2024-flutter/refs/heads/main/script/opendg.sh)"
 # ```
 # After setting up the alias, you can simply type `opendg` in your terminal to run this script.
 
