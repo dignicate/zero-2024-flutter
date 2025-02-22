@@ -128,10 +128,18 @@ set_option() {
           unset options[$((delete_index-1))]
           printf "%s\n" "${options[@]}" > "$OPTIONS_FILE"
           echo "Option deleted."
+          if [ "${#options[@]}" -gt 0 ]; then
+            selected_option=${options[0]}
+            echo "$selected_option" > "$CURRENT_OPTION_FILE"
+            echo "Current option set to: $selected_option"
+          else
+            # shellcheck disable=SC2188
+            > "$CURRENT_OPTION_FILE"
+          fi
           echo "Updated options:"
-          for i in "${!options[@]}"; do
-            echo "$((i+1)). ${options[$i]}"
-          done
+          # shellcheck disable=SC2207
+          options=($(<"$OPTIONS_FILE"))
+          list_options
         else
           echo "Invalid selection."
         fi
@@ -151,7 +159,22 @@ set_option() {
 if [ "$input" = 1 ]; then
   echo_eval "git commit --allow-empty -m \"empty commit\""
 elif [ "$input" = 2 ]; then
-  read -r additional_args < "$OPTIONS_FILE" 2>/dev/null
+  if [ -f "$CURRENT_OPTION_FILE" ] && [ -s "$CURRENT_OPTION_FILE" ]; then
+    additional_args=$(<"$CURRENT_OPTION_FILE")
+  else
+    if [ -f "$OPTIONS_FILE" ]; then
+      # shellcheck disable=SC2207
+      options=($(<"$OPTIONS_FILE"))
+      if [ ${#options[@]} -gt 0 ]; then
+        additional_args=${options[0]}
+        echo "$additional_args" > "$CURRENT_OPTION_FILE"
+      else
+        additional_args=""
+      fi
+    else
+      additional_args=""
+    fi
+  fi
 
   echo "Fetching device information, please wait..."
   echo
