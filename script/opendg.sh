@@ -68,14 +68,56 @@ set_option() {
     echo "No options set."
   fi
 
-  read -p "Enter additional arguments (e.g., --dart-define=XXXX) or press Enter to cancel: " additional_args
+  echo "Choose an action:"
+  echo "  1. List current options"
+  echo "  2. Add new option"
+  echo "  3. Delete an option"
+  echo "  4. Cancel"
+  read -p "Select an action: " action
 
-  if [ -n "$additional_args" ]; then
-    echo "$additional_args" > "$OPTIONS_FILE" 2>/dev/null
-    echo "Options saved."
-  else
-    echo "Operation canceled."
-  fi
+  case $action in
+    1)
+      if [ -f "$OPTIONS_FILE" ]; then
+        echo "Current options: $(<"$OPTIONS_FILE")"
+      else
+        echo "No options set."
+      fi
+      ;;
+    2)
+      read -p "Enter additional arguments (e.g., --dart-define=XXXX): " additional_args
+      if [ -n "$additional_args" ]; then
+        echo "$additional_args" >> "$OPTIONS_FILE"
+        echo "Option added."
+      else
+        echo "No option added."
+      fi
+      ;;
+    3)
+      if [ -f "$OPTIONS_FILE" ]; then
+        options=($(<"$OPTIONS_FILE"))
+        echo "Current options:"
+        for i in "${!options[@]}"; do
+          echo "$((i+1)). ${options[$i]}"
+        done
+        read -p "Select an option to delete: " delete_index
+        if [[ $delete_index -gt 0 && $delete_index -le ${#options[@]} ]]; then
+          unset options[$((delete_index-1))]
+          printf "%s\n" "${options[@]}" > "$OPTIONS_FILE"
+          echo "Option deleted."
+        else
+          echo "Invalid selection."
+        fi
+      else
+        echo "No options set."
+      fi
+      ;;
+    4)
+      echo "Operation canceled."
+      ;;
+    *)
+      echo "Invalid action."
+      ;;
+  esac
 }
 
 if [ "$input" = 1 ]; then
