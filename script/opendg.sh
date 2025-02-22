@@ -9,12 +9,14 @@
 
 
 OPTIONS_FILE="$HOME/.flutter_run_options"
+LAST_CMD_FILE="/tmp/last_cmd"
 
 echo "=== Dignicate, zero OpenDG script. ==="
 echo "  1. Git empty commit"
 echo "  2. Run "
 echo "  3. Set option"
 echo "  4. Open iOS simulator"
+echo "  5. Redo last command"
 echo "Any other key to Exit"
 echo
 read -p "Select an option: " input
@@ -22,7 +24,15 @@ read -p "Select an option: " input
 echo_eval() {
   local cmd="$1"
   echo "$cmd"
-  eval "$cmd"
+  read -p "Choose (c)opy or (r)un the command. [c/r] (default: r): " choice
+  choice=${choice:-r}
+  if [ "$choice" = "c" ]; then
+    echo "$cmd" | pbcopy
+    echo "Command copied to clipboard."
+  else
+    echo "$cmd" > "$LAST_CMD_FILE"
+    eval "$cmd"
+  fi
 }
 
 parse_devices() {
@@ -115,6 +125,13 @@ elif [ "$input" = 4 ]; then
   else
     echo "No iOS device found."
   fi
+elif [ "$input" = 5 ]; then
+    if [ -f "$LAST_CMD_FILE" ]; then
+      last_cmd=$(<"$LAST_CMD_FILE")
+      echo_eval "$last_cmd"
+    else
+      echo "No command to redo."
+    fi
 else
   echo "Exit"
   exit
