@@ -10,6 +10,8 @@
 
 OPTIONS_FILE="/tmp/opendg/run_options"
 LAST_CMD_FILE="/tmp/opendg/last_cmd"
+CURRENT_OPTION_FILE="/tmp/opendg/current_option"
+
 mkdir -p /tmp/opendg
 
 echo "=== Dignicate, zero OpenDG script. ==="
@@ -60,10 +62,22 @@ list_ios_simulators() {
   done
 }
 
+list_options() {
+  current_option=$(<"$CURRENT_OPTION_FILE")
+  for i in "${!options[@]}"; do
+    if [ "${options[$i]}" == "$current_option" ]; then
+      echo "$((i+1)). ${options[$i]} (current)"
+    else
+      echo "$((i+1)). ${options[$i]}"
+    fi
+  done
+}
+
 set_option() {
   if [ -f "$OPTIONS_FILE" ]; then
     current_options=$(<"$OPTIONS_FILE")
-    echo "Current options: $current_options"
+    echo "Current options: "
+    echo "$current_options"
   else
     echo "No options set."
   fi
@@ -78,7 +92,17 @@ set_option() {
   case $action in
     1)
       if [ -f "$OPTIONS_FILE" ]; then
-        echo "Current options: $(<"$OPTIONS_FILE")"
+        # shellcheck disable=SC2207
+        options=($(<"$OPTIONS_FILE"))
+        list_options
+        read -p "Select an option to set as current: " select_index
+        if [[ $select_index -gt 0 && $select_index -le ${#options[@]} ]]; then
+          selected_option=${options[$((select_index-1))]}
+          echo "$selected_option" > "$CURRENT_OPTION_FILE"
+          echo "Current option set to: $selected_option"
+        else
+          echo "Invalid selection."
+        fi
       else
         echo "No options set."
       fi
@@ -88,22 +112,26 @@ set_option() {
       if [ -n "$additional_args" ]; then
         echo "$additional_args" >> "$OPTIONS_FILE"
         echo "Option added."
+        list_options
       else
         echo "No option added."
       fi
       ;;
     3)
       if [ -f "$OPTIONS_FILE" ]; then
+        # shellcheck disable=SC2207
         options=($(<"$OPTIONS_FILE"))
-        echo "Current options:"
-        for i in "${!options[@]}"; do
-          echo "$((i+1)). ${options[$i]}"
-        done
+        list_options
         read -p "Select an option to delete: " delete_index
         if [[ $delete_index -gt 0 && $delete_index -le ${#options[@]} ]]; then
+          # shellcheck disable=SC2184
           unset options[$((delete_index-1))]
           printf "%s\n" "${options[@]}" > "$OPTIONS_FILE"
           echo "Option deleted."
+          echo "Updated options:"
+          for i in "${!options[@]}"; do
+            echo "$((i+1)). ${options[$i]}"
+          done
         else
           echo "Invalid selection."
         fi
