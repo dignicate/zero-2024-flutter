@@ -8,8 +8,9 @@
 # After setting up the alias, you can simply type `opendg` in your terminal to run this script.
 
 
-OPTIONS_FILE="$HOME/.flutter_run_options"
-LAST_CMD_FILE="/tmp/last_cmd"
+OPTIONS_FILE="/tmp/opendg/run_options"
+LAST_CMD_FILE="/tmp/opendg/last_cmd"
+mkdir -p /tmp/opendg
 
 echo "=== Dignicate, zero OpenDG script. ==="
 echo "  1. Git empty commit"
@@ -70,7 +71,7 @@ set_option() {
   read -p "Enter additional arguments (e.g., --dart-define=XXXX) or press Enter to cancel: " additional_args
 
   if [ -n "$additional_args" ]; then
-    echo "$additional_args" > "$OPTIONS_FILE"
+    echo "$additional_args" > "$OPTIONS_FILE" 2>/dev/null
     echo "Options saved."
   else
     echo "Operation canceled."
