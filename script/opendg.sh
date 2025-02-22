@@ -53,22 +53,16 @@ parse_devices() {
 
 list_ios_simulators() {
   local keyword="$1"
-  xcrun simctl list devices | grep -E 'iPhone|iPad' | grep -v 'unavailable' | while read -r line; do
-    device_name=$(echo "$line" | awk -F' \\(' '{print $1}')
-    device_id=$(echo "$line" | grep -oE '[A-F0-9-]{36}')
-    if [[ "$device_name" == *"$keyword"* ]]; then
-      echo "$device_id, $device_name"
-    fi
-  done
-}
-
-list_options() {
-  current_option=$(<"$CURRENT_OPTION_FILE")
-  for i in "${!options[@]}"; do
-    if [ "${options[$i]}" == "$current_option" ]; then
-      echo "$((i+1)). ${options[$i]} (current)"
-    else
-      echo "$((i+1)). ${options[$i]}"
+  local os_version=""
+  xcrun simctl list devices | while read -r line; do
+    if [[ "$line" =~ ^-- ]]; then
+      os_version=$(echo "$line" | sed 's/-- \(.*\) --/\1/')
+    elif [[ "$line" =~ \([A-F0-9-]{36}\) ]]; then
+      device_name=$(echo "$line" | awk -F' \\(' '{print $1}' | xargs)
+      device_id=$(echo "$line" | grep -oE '[A-F0-9-]{36}')
+      if [[ -z "$keyword" || "$device_name" == *"$keyword"* ]]; then
+        echo "$device_id, $device_name, $os_version"
+      fi
     fi
   done
 }
@@ -82,6 +76,7 @@ set_option() {
     echo "No options set."
   fi
 
+  # shellcheck disable=SC2001
   echo "Choose an action:"
   echo "  1. List current options"
   echo "  2. Add new option"
@@ -204,6 +199,7 @@ elif [ "$input" = 4 ]; then
   echo
   read -p "Enter keyword to filter devices (e.g., iPhone, iPad): " keyword
   devices=$(list_ios_simulators "$keyword")
+  echo "devices: $devices"
   if [ -n "$devices" ]; then
     echo "Available iOS devices:"
     echo "$devices" | nl -w 2 -s '. '
