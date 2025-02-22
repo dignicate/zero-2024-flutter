@@ -70,7 +70,7 @@ set_option() {
 if [ "$input" = 1 ]; then
   echo_eval "git commit --allow-empty -m \"empty commit\""
 elif [ "$input" = 2 ]; then
-  read -r additional_args < "$OPTIONS_FILE"
+  read -r additional_args < "$OPTIONS_FILE" 2>/dev/null
 
   echo "Fetching device information, please wait..."
   echo
@@ -108,7 +108,7 @@ elif [ "$input" = 4 ]; then
     device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
     if [ -n "$device_id" ]; then
       xcrun simctl boot "$device_id"
-      open -a Simulator --args -CurrentDeviceUDID "$device_id"
+      echo_eval "open -a Simulator --args -CurrentDeviceUDID \"$device_id\""
     else
       echo "Invalid selection."
     fi
