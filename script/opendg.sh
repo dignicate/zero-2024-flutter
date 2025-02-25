@@ -7,12 +7,12 @@
 # ```
 # After setting up the alias, you can simply type `opendg` in your terminal to run this script.
 
+TMP_DIR="$HOME/.opendg"
+OPTIONS_FILE="$TMP_DIR/run_options"
+LAST_CMD_FILE="$TMP_DIR/last_cmd"
+CURRENT_OPTION_FILE="$TMP_DIR/current_option"
 
-OPTIONS_FILE="/tmp/opendg/run_options"
-LAST_CMD_FILE="/tmp/opendg/last_cmd"
-CURRENT_OPTION_FILE="/tmp/opendg/current_option"
-
-mkdir -p /tmp/opendg
+mkdir -p "$TMP_DIR"
 
 echo "=== Dignicate, zero OpenDG script. ==="
 echo "  1. Git empty commit"
