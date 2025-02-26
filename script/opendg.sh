@@ -67,6 +67,34 @@ list_ios_simulators() {
   done
 }
 
+list_options() {
+  if [ -f "$OPTIONS_FILE" ]; then
+    options=($(<"$OPTIONS_FILE"))
+    if [ ${#options[@]} -gt 0 ]; then
+      current_option=""
+      if [ -f "$CURRENT_OPTION_FILE" ]; then
+        current_option=$(<"$CURRENT_OPTION_FILE")
+      fi
+      if [ -z "$current_option" ]; then
+        current_option=${options[0]}
+        echo "$current_option" > "$CURRENT_OPTION_FILE"
+      fi
+      echo "Available options:"
+      for i in "${!options[@]}"; do
+        if [ "${options[$i]}" = "$current_option" ]; then
+          echo "$((i+1)). ${options[$i]} (current)"
+        else
+          echo "$((i+1)). ${options[$i]}"
+        fi
+      done
+    else
+      echo "No options available."
+    fi
+  else
+    echo "No options file found."
+  fi
+}
+
 set_option() {
   if [ -f "$OPTIONS_FILE" ]; then
     current_options=$(<"$OPTIONS_FILE")
