@@ -1,10 +1,24 @@
 #!/bin/bash
 
 # This script provides a menu-driven interface for various Flutter development tasks.
-# To use this script, you can set up an alias in your shell configuration file (e.g., .bashrc or .zshrc):
+# To use this script,
+#
+# for macOS:
+# 1. Add below line to `.zshrc` or `.bashrc` (depending on shell you use).
 # ```
 # alias opendg="bash <(curl -sSL https://raw.githubusercontent.com/dignicate/zero-2024-flutter/refs/heads/main/script/opendg.sh)"
 # ```
+#
+# for Windows (WSL):
+# 1. Open the terminal as Administrator.
+# 2. Type `notepad $PROFILE`
+# 3. Add the following function to the file and save it:
+# ```
+# function opendg {
+#     wsl bash -c "curl -sSL https://raw.githubusercontent.com/dignicate/zero-2024-flutter/refs/heads/main/script/opendg.sh -o /tmp/opendg.sh && bash /tmp/opendg.sh"
+# }
+# ```
+#
 # After setting up the alias, you can simply type `opendg` in your terminal to run this script.
 
 TMP_DIR="$HOME/.opendg"
@@ -24,13 +38,23 @@ echo "Any other key to Exit"
 echo
 read -p "Select an option: " input
 
+copy() {
+  local cmd="$1"
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "$cmd" | pbcopy
+  else
+    echo "$cmd" | xclip -selection clipboard
+  fi
+  echo "Command copied to clipboard."
+}
+
 echo_eval() {
   local cmd="$1"
   echo "$cmd"
   read -p "Choose (c)opy or (r)un the command. [c/r] (default: r): " choice
   choice=${choice:-r}
   if [ "$choice" = "c" ]; then
-    echo "$cmd" | pbcopy
+    copy "$cmd"
     echo "Command copied to clipboard."
   else
     echo "$cmd" > "$LAST_CMD_FILE"
@@ -39,7 +63,7 @@ echo_eval() {
 }
 
 parse_devices() {
-  flutter devices | grep -E 'android|ios' | while read -r line; do
+  fvm flutter devices | grep -E 'android|ios' | while read -r line; do
     device_id=$(echo "$line" | awk -F' • ' '{print $2}' | xargs)
     os_version=$(echo "$line" | awk -F' • ' '{print $4}')
     device_type=$(echo "$line" | grep -oE 'emulator|simulator|device')
