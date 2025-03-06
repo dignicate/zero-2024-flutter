@@ -69,7 +69,7 @@ list_ios_simulators() {
 
 list_options() {
   if [ -f "$OPTIONS_FILE" ]; then
-    options=($(<"$OPTIONS_FILE"))
+    IFS=$'\n' read -d '' -r -a options < "$OPTIONS_FILE"
     if [ ${#options[@]} -gt 0 ]; then
       current_option=""
       if [ -f "$CURRENT_OPTION_FILE" ]; then
@@ -132,6 +132,7 @@ set_option() {
       ;;
     2)
       read -p "Enter additional arguments (e.g., --dart-define=XXXX): " additional_args
+      echo "Add option: $additional_args"
       if [ -n "$additional_args" ]; then
         echo "$additional_args" >> "$OPTIONS_FILE"
         echo "Option added."
