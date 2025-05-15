@@ -56,10 +56,11 @@ list_ios_simulators() {
   local os_version=""
   xcrun simctl list devices | while read -r line; do
     if [[ "$line" =~ ^-- ]]; then
-      os_version=$(echo "$line" | sed 's/-- \(.*\) --/\1/')
-    elif [[ "$line" =~ \([A-F0-9-]{36}\) ]]; then
-      device_name=$(echo "$line" | awk -F' \\(' '{print $1}' | xargs)
-      device_id=$(echo "$line" | grep -oE '[A-F0-9-]{36}')
+      os_version=$(echo "$line" | sed 's/^-- \(.*\) --$/\1/')
+    elif [[ "$line" =~ ([A-F0-9-]{36}) ]]; then
+      device_id="${BASH_REMATCH[1]}"
+      # デバイス名は最初のUUIDより前の部分すべて
+      device_name=$(echo "$line" | sed -E "s/ *\(([A-F0-9-]{36})\).*//" | xargs)
       if [[ -z "$keyword" || "$device_name" == *"$keyword"* ]]; then
         echo "$device_id, $device_name, $os_version"
       fi
