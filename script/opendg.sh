@@ -227,8 +227,9 @@ elif [ "$input" = 3 ]; then
 elif [ "$input" = 4 ]; then
   echo "Fetching iOS devices, please wait..."
   echo
-  read -p "Enter keyword to filter devices (e.g., iPhone, iPad): " keyword
-  devices=$(list_ios_simulators "$keyword")
+  read -p "Enter keyword to filter devices (regex supported, e.g., iPhone|iPad): " keyword
+  # shellcheck disable=SC2119
+  devices=$(list_ios_simulators | grep -E "$keyword")
   echo "devices: $devices"
   if [ -n "$devices" ]; then
     echo "Available iOS devices:"
