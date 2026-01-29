@@ -14,6 +14,26 @@ CURRENT_OPTION_FILE="$TMP_DIR/current_option"
 
 mkdir -p "$TMP_DIR"
 
+# コマンドライン引数を配列で取得
+declare -a args=("$@")
+arg_index=0
+
+read_with_default() {
+  local prompt="$1"
+  local varname="$2"
+  local default="$3"
+  if [ $arg_index -lt ${#args[@]} ]; then
+    eval $varname="\${args[\$arg_index]}"
+    echo "$prompt${!varname} (auto)"
+    ((arg_index++))
+  else
+    read -p "$prompt" $varname
+    if [ -z "${!varname}" ] && [ -n "$default" ]; then
+      eval $varname="$default"
+    fi
+  fi
+}
+
 echo "=== Dignicate, zero OpenDG script. ==="
 echo "  1. Git empty commit"
 echo "  2. Run "
@@ -22,12 +42,12 @@ echo "  4. Open iOS simulator"
 echo "  5. Redo last command"
 echo "Any other key to Exit"
 echo
-read -p "Select an option: " input
+read_with_default "Select an option: " input
 
 echo_eval() {
   local cmd="$1"
   echo "$cmd"
-  read -p "Choose (c)opy or (r)un the command. [c/r] (default: r): " choice
+  read_with_default "Choose (c)opy or (r)un the command. [c/r] (default: r): " choice "r"
   choice=${choice:-r}
   if [ "$choice" = "c" ]; then
     echo "$cmd" | pbcopy
@@ -111,7 +131,7 @@ set_option() {
   echo "  2. Add new option"
   echo "  3. Delete an option"
   echo "  4. Cancel"
-  read -p "Select an action: " action
+  read_with_default "Select an action: " action
 
   case $action in
     1)
@@ -119,7 +139,7 @@ set_option() {
         # shellcheck disable=SC2207
         options=($(<"$OPTIONS_FILE"))
         list_options
-        read -p "Select an option to set as current: " select_index
+        read_with_default "Select an option to set as current: " select_index
         if [[ $select_index -gt 0 && $select_index -le ${#options[@]} ]]; then
           selected_option=${options[$((select_index-1))]}
           echo "$selected_option" > "$CURRENT_OPTION_FILE"
@@ -132,7 +152,7 @@ set_option() {
       fi
       ;;
     2)
-      read -p "Enter additional arguments (e.g., --dart-define=XXXX): " additional_args
+      read_with_default "Enter additional arguments (e.g., --dart-define=XXXX): " additional_args
       echo "Add option: $additional_args"
       if [ -n "$additional_args" ]; then
         echo "$additional_args" >> "$OPTIONS_FILE"
@@ -147,7 +167,7 @@ set_option() {
         # shellcheck disable=SC2207
         options=($(<"$OPTIONS_FILE"))
         list_options
-        read -p "Select an option to delete: " delete_index
+        read_with_default "Select an option to delete: " delete_index
         if [[ $delete_index -gt 0 && $delete_index -le ${#options[@]} ]]; then
           # shellcheck disable=SC2184
           unset options[$((delete_index-1))]
@@ -210,7 +230,7 @@ elif [ "$input" = 2 ]; then
     echo "Available devices:"
     echo "$devices" | nl -w 2 -s '. '
     echo
-    read -p "Select a device: " device_index
+    read_with_default "Select a device: " device_index
     device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
     if [ -n "$device_id" ]; then
       cmd="fvm flutter run -d $device_id $additional_args"
@@ -227,7 +247,7 @@ elif [ "$input" = 3 ]; then
 elif [ "$input" = 4 ]; then
   echo "Fetching iOS devices, please wait..."
   echo
-  read -p "Enter keyword to filter devices (regex supported, e.g., iPhone|iPad): " keyword
+  read_with_default "Enter keyword to filter devices (regex supported, e.g., iPhone|iPad): " keyword
   # shellcheck disable=SC2119
   devices=$(list_ios_simulators | grep -E "$keyword")
   echo "devices: $devices"
@@ -235,7 +255,7 @@ elif [ "$input" = 4 ]; then
     echo "Available iOS devices:"
     echo "$devices" | nl -w 2 -s '. '
     echo
-    read -p "Select a device: " device_index
+    read_with_default "Select a device: " device_index
     device_id=$(echo "$devices" | sed -n "${device_index}p" | awk -F', ' '{print $1}')
     if [ -n "$device_id" ]; then
       xcrun simctl boot "$device_id"
